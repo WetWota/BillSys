@@ -10,7 +10,6 @@ package scam;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
@@ -70,9 +69,9 @@ public class BillingUI extends javax.swing.JFrame {
         jScrollPane7 = new javax.swing.JScrollPane();
         changePane = new javax.swing.JTextPane();
         enterButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        RemoveButton = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        RemovePane = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Cashier");
@@ -162,9 +161,16 @@ public class BillingUI extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("jButton1");
+        RemoveButton.setText("Remove");
+        RemoveButton.setActionCommand("Remove");
+        RemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveButtonActionPerformed(evt);
+            }
+        });
 
-        jScrollPane4.setViewportView(jTextPane1);
+        jScrollPane4.setViewportView(RemovePane);
+        RemovePane.getAccessibleContext().setAccessibleName("RemovePane");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -184,13 +190,12 @@ public class BillingUI extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jScrollPane4)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1)
+                                .addComponent(RemoveButton)
                                 .addGap(40, 40, 40)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
@@ -224,7 +229,7 @@ public class BillingUI extends javax.swing.JFrame {
                                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(CashField)
                                 .addComponent(enterButton)
-                                .addComponent(jButton1))
+                                .addComponent(RemoveButton))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -386,6 +391,39 @@ public class BillingUI extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_enterButtonActionPerformed
 
+    private void RemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveButtonActionPerformed
+        String idInput = RemovePane.getText().trim(); // Get text from the JTextPane
+    
+        if (!idInput.isEmpty()) {
+            try {
+                int idToRemove = Integer.parseInt(idInput); // Parse the ID
+
+                Product productToRemove = findProductById(idToRemove);
+
+                if (productToRemove != null) {
+                    // Remove the product from the billDataList
+                    billDataList.remove(productToRemove);
+
+                    // Update the billing model to reflect the changes
+                    billingModel();
+
+                    // Update total price display
+                    totalPane.setText("P " + Double.toString(calculateTotalPrice()));
+
+                    // Optionally, show a message that the product was removed
+                    RemovePane.setText(""); // Display success message in RemovePane
+                } else {
+                    RemovePane.setText("Product not found."); // Display error message in RemovePane
+                }
+            } catch (NumberFormatException e) {
+                RemovePane.setText("Invalid ID format. Please enter a valid number."); // Display error message in RemovePane
+            }
+            } else {
+                RemovePane.setText("Please enter an ID."); // Prompt user to enter an ID
+            }
+        
+    }//GEN-LAST:event_RemoveButtonActionPerformed
+
     
     private void showInsufficientCashDialog() {
     JFrame frame = new JFrame();
@@ -427,13 +465,14 @@ public class BillingUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField CashField;
+    private javax.swing.JButton RemoveButton;
+    private javax.swing.JTextPane RemovePane;
     private javax.swing.JLabel billLabel;
     private javax.swing.JPanel billPanel;
     private javax.swing.JTable billTable;
     private javax.swing.JTextPane changePane;
     private javax.swing.JButton enterButton;
     private javax.swing.JTable inventoryTable;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -444,7 +483,6 @@ public class BillingUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JTextPane jTextPane1;
     private javax.swing.JTextPane selectedPane;
     private javax.swing.JTextPane totalPane;
     // End of variables declaration//GEN-END:variables
